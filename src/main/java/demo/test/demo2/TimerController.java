@@ -13,6 +13,7 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.util.Duration;
 import java.io.IOException;
+import java.util.prefs.Preferences;
 
 public class TimerController {
 
@@ -27,14 +28,22 @@ public class TimerController {
     private int currentTimeSeconds = workTimeSeconds;
     private boolean isWorking = true;
     private boolean isCounting = false;
-    private boolean autoStartPomodoros = false;
-    private boolean autoStartBreaks = false;
+    private boolean autoStartPomodoros;
+    private boolean autoStartBreaks;
     private Timeline timeline;
 
     @FXML
     private Label timerText;
     @FXML
     private Label workingStatusLabel;
+
+    private Preferences preferences;
+
+    public TimerController() {
+        preferences = Preferences.userNodeForPackage(TimerController.class);
+        autoStartPomodoros = preferences.getBoolean("autoStartPomodoros", false);
+        autoStartBreaks = preferences.getBoolean("autoStartBreaks", false);
+    }
 
     @FXML
     protected void start() {
@@ -69,7 +78,7 @@ public class TimerController {
         }
 
         timeline = new Timeline(new KeyFrame(Duration.seconds(1), e -> {
-            currentTimeSeconds-=10;
+            currentTimeSeconds--;
             if (currentTimeSeconds <= 0) {
                 switchTimer();
                 setWorkingStatusLabel();
@@ -147,17 +156,18 @@ public class TimerController {
 
     public void setAutoStartPomodoros(boolean autoStartPomodoros) {
         this.autoStartPomodoros = autoStartPomodoros;
+        preferences.putBoolean("autoStartPomodoros", autoStartPomodoros);
     }
 
     public void setAutoStartBreaks(boolean autoStartBreaks) {
         this.autoStartBreaks = autoStartBreaks;
+        preferences.putBoolean("autoStartBreaks", autoStartBreaks);
     }
 
-    public void setWorkingStatusLabel(){
-        if (isWorking){
+    public void setWorkingStatusLabel() {
+        if (isWorking) {
             workingStatusLabel.setText("Working");
-        }
-        else{
+        } else {
             workingStatusLabel.setText("Break");
         }
     }

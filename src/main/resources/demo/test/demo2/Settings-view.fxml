@@ -19,13 +19,13 @@
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
             </rowConstraints>
             <children>
                 <Label text="Choose Font Size:" />
@@ -47,9 +47,10 @@
                     </children>
                 </HBox>
                 <Button onAction="#applyBreakSettings" text="Apply Break Settings" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-            <CheckBox fx:id="autoStartPomodorosCheckBox" mnemonicParsing="false" text="Auto Start Pomodoros" GridPane.rowIndex="6" />
-            <CheckBox fx:id="autoStartBreaksCheckBox" mnemonicParsing="false" text="Auto Start Breaks" translateX="200.0" GridPane.rowIndex="6" />
+                <CheckBox fx:id="autoStartPomodorosCheckBox" mnemonicParsing="false" text="Auto Start Pomodoros" GridPane.rowIndex="6" />
+                <CheckBox fx:id="autoStartBreaksCheckBox" mnemonicParsing="false" text="Auto Start Breaks" translateX="200.0" GridPane.rowIndex="6" />
                 <Button onAction="#applyAutoStartSettings" text="Apply Auto Start Settings" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                <Button onAction="#applyAllSettings" text="Apply All Settings" GridPane.columnIndex="1" GridPane.rowIndex="7" />
             </children>
         </GridPane>
     </children>
