@@ -47,8 +47,9 @@
                     </children>
                 </HBox>
                 <Button onAction="#applyBreakSettings" text="Apply Break Settings" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-            <CheckBox mnemonicParsing="false" text="Auto Start Pomodoros" GridPane.rowIndex="6" />
-            <CheckBox mnemonicParsing="false" text="Auto Start Breaks" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+            <CheckBox fx:id="autoStartPomodorosCheckBox" mnemonicParsing="false" text="Auto Start Pomodoros" GridPane.rowIndex="6" />
+            <CheckBox fx:id="autoStartBreaksCheckBox" mnemonicParsing="false" text="Auto Start Breaks" translateX="200.0" GridPane.rowIndex="6" />
+                <Button onAction="#applyAutoStartSettings" text="Apply Auto Start Settings" GridPane.columnIndex="1" GridPane.rowIndex="6" />
             </children>
         </GridPane>
     </children>

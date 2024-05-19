@@ -27,10 +27,14 @@ public class TimerController {
     private int currentTimeSeconds = workTimeSeconds;
     private boolean isWorking = true;
     private boolean isCounting = false;
+    private boolean autoStartPomodoros = false;
+    private boolean autoStartBreaks = false;
     private Timeline timeline;
 
     @FXML
     private Label timerText;
+    @FXML
+    private Label workingStatusLabel;
 
     @FXML
     protected void start() {
@@ -58,17 +62,17 @@ public class TimerController {
 
     @FXML
     private void startTimer() {
-        if (isCounting){
+        if (isCounting) {
             return;
-        }
-        else{
+        } else {
             isCounting = true;
         }
+
         timeline = new Timeline(new KeyFrame(Duration.seconds(1), e -> {
-            currentTimeSeconds--;
+            currentTimeSeconds-=10;
             if (currentTimeSeconds <= 0) {
                 switchTimer();
-
+                setWorkingStatusLabel();
             }
             updateTimerLabel();
         }));
@@ -91,10 +95,21 @@ public class TimerController {
     private void switchTimer() {
         if (isWorking) {
             currentTimeSeconds = breakTimeSeconds;
+            isWorking = false;
+            if (autoStartBreaks) {
+                startTimer();
+            } else {
+                resetTimer();
+            }
         } else {
             currentTimeSeconds = workTimeSeconds;
+            isWorking = true;
+            if (autoStartPomodoros) {
+                startTimer();
+            } else {
+                resetTimer();
+            }
         }
-        isWorking = !isWorking;
     }
 
     @FXML
@@ -128,5 +143,22 @@ public class TimerController {
     public void setBreakSettings(int minutes) {
         this.breakTimeSeconds = minutes * 60;
         updateTimerLabel();
+    }
+
+    public void setAutoStartPomodoros(boolean autoStartPomodoros) {
+        this.autoStartPomodoros = autoStartPomodoros;
+    }
+
+    public void setAutoStartBreaks(boolean autoStartBreaks) {
+        this.autoStartBreaks = autoStartBreaks;
+    }
+
+    public void setWorkingStatusLabel(){
+        if (isWorking){
+            workingStatusLabel.setText("Working");
+        }
+        else{
+            workingStatusLabel.setText("Break");
+        }
     }
 }

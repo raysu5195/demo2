@@ -3,7 +3,7 @@ package demo.test.demo2;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
-import javafx.scene.control.Label;
+import javafx.scene.control.CheckBox;
 import javafx.stage.Stage;
 
 public class SettingsController {
@@ -17,6 +17,11 @@ public class SettingsController {
 
     @FXML
     private TextField breakMinutesField;
+
+    @FXML
+    private CheckBox autoStartPomodorosCheckBox;
+    @FXML
+    private CheckBox autoStartBreaksCheckBox;
 
     public void setTimerController(TimerController timerController) {
         this.timerController = timerController;
@@ -57,6 +62,14 @@ public class SettingsController {
         } catch (NumberFormatException e) {
             // Handle invalid input, e.g., show an error message
             System.out.println("Invalid input for minutes");
+        }
+    }
+
+    @FXML
+    private void applyAutoStartSettings() {
+        if (timerController != null) {
+            timerController.setAutoStartPomodoros(autoStartPomodorosCheckBox.isSelected());
+            timerController.setAutoStartBreaks(autoStartBreaksCheckBox.isSelected());
         }
     }
 }
