@@ -4,8 +4,12 @@ import javafx.fxml.FXML;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Slider;
 import javafx.stage.Stage;
 import java.util.prefs.Preferences;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import java.io.File;
 
 public class SettingsController {
 
@@ -16,7 +20,6 @@ public class SettingsController {
 
     @FXML
     private TextField minutesTextField;
-
     @FXML
     private TextField breakMinutesField;
 
@@ -24,6 +27,12 @@ public class SettingsController {
     private CheckBox autoStartPomodorosCheckBox;
     @FXML
     private CheckBox autoStartBreaksCheckBox;
+
+    @FXML
+    private ComboBox<String> workingSoundComboBox;
+
+    @FXML
+    private Slider volumeSlider;
 
     private Preferences preferences;
 
@@ -33,12 +42,19 @@ public class SettingsController {
 
     public void setTimerController(TimerController timerController) {
         this.timerController = timerController;
+        loadSounds();
         loadSettings();
     }
 
     @FXML
     private void initialize() {
         fontSizeComboBox.getItems().addAll("14", "18", "22", "26", "30");
+        // Add listener for volumeSlider
+        volumeSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
+            if (timerController != null && timerController.getWorkingMediaPlayer() != null) {
+                timerController.getWorkingMediaPlayer().setVolume(newValue.doubleValue());
+            }
+        });
     }
 
     @FXML
@@ -76,8 +92,26 @@ public class SettingsController {
         if (timerController != null) {
             timerController.setAutoStartPomodoros(autoStartPomodorosCheckBox.isSelected());
             timerController.setAutoStartBreaks(autoStartBreaksCheckBox.isSelected());
-            saveSettings();
         }
+    }
+
+    @FXML
+    private void applyWorkingSoundSettings() {
+        if (timerController != null) {
+            String selectedSound = workingSoundComboBox.getValue();
+            timerController.setWorkingSound(selectedSound);
+
+        }
+    }
+
+    @FXML
+    private void applyAllSettings() {
+        applySettings();
+        applyTimerSettings();
+        applyBreakSettings();
+        applyAutoStartSettings();
+        applyWorkingSoundSettings();
+        saveSettings();
     }
 
     private void saveSettings() {
@@ -87,6 +121,8 @@ public class SettingsController {
         prefs.putInt("breakMinutes", Integer.parseInt(breakMinutesField.getText()));
         prefs.putBoolean("autoStartPomodoros", autoStartPomodorosCheckBox.isSelected());
         prefs.putBoolean("autoStartBreaks", autoStartBreaksCheckBox.isSelected());
+        prefs.put("workingSound", workingSoundComboBox.getValue());
+        prefs.putDouble("volume", volumeSlider.getValue());
     }
 
     private void loadSettings() {
@@ -96,13 +132,23 @@ public class SettingsController {
         breakMinutesField.setText(String.valueOf(prefs.getInt("breakMinutes", 5)));
         autoStartPomodorosCheckBox.setSelected(prefs.getBoolean("autoStartPomodoros", false));
         autoStartBreaksCheckBox.setSelected(prefs.getBoolean("autoStartBreaks", false));
+        workingSoundComboBox.setValue(prefs.get("workingSound", "No Sound"));
+        volumeSlider.setValue(prefs.getDouble("volume", 0.5));
+    }
+    //加入資料夾的音樂到目錄
+    private void loadSounds() {
+        workingSoundComboBox.getItems().add("No Sound");
+        File soundFolder = new File("C:/Users/su/Desktop/javaprojects/demo2/src/main/sounds");
+        if (soundFolder.exists() && soundFolder.isDirectory()) {
+            File[] soundFiles = soundFolder.listFiles();
+            if (soundFiles != null) {
+                for (File file : soundFiles) {
+                    if (file.isFile() && file.getName().toLowerCase().endsWith(".mp3")) {
+                        workingSoundComboBox.getItems().add(file.getName());
+                    }
+                }
+            }
+        }
     }
 
-    @FXML
-    private void applyAllSettings() {
-        applySettings();
-        applyTimerSettings();
-        applyBreakSettings();
-        applyAutoStartSettings();
-    }
 }

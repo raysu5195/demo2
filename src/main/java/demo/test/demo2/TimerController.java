@@ -7,13 +7,16 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.text.Font;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.stage.Stage;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.util.Duration;
-import java.io.IOException;
 import java.util.prefs.Preferences;
+import java.io.IOException;
+import java.io.File;
 
 public class TimerController {
 
@@ -31,6 +34,7 @@ public class TimerController {
     private boolean autoStartPomodoros;
     private boolean autoStartBreaks;
     private Timeline timeline;
+    private MediaPlayer workingMediaPlayer;
 
     @FXML
     private Label timerText;
@@ -43,11 +47,6 @@ public class TimerController {
         preferences = Preferences.userNodeForPackage(TimerController.class);
         autoStartPomodoros = preferences.getBoolean("autoStartPomodoros", false);
         autoStartBreaks = preferences.getBoolean("autoStartBreaks", false);
-    }
-
-    @FXML
-    protected void start() {
-        startTimer();
     }
 
     @FXML
@@ -74,17 +73,21 @@ public class TimerController {
         if (isCounting) {
             return;
         } else {
+            if (isWorking && workingMediaPlayer != null) {
+                workingMediaPlayer.play();
+            }
             isCounting = true;
         }
-
         timeline = new Timeline(new KeyFrame(Duration.seconds(1), e -> {
-            currentTimeSeconds--;
+            currentTimeSeconds-=5;
             if (currentTimeSeconds <= 0) {
                 switchTimer();
                 setWorkingStatusLabel();
+                switchWorkingMediaPlayer();
             }
             updateTimerLabel();
         }));
+
         timeline.setCycleCount(Animation.INDEFINITE);
         timeline.play();
     }
@@ -96,9 +99,8 @@ public class TimerController {
             timeline.stop();
         }
         currentTimeSeconds = workTimeSeconds;
-        isWorking = true;
         updateTimerLabel();
-        startButton.setText("Start");
+        //startButton.setText("Start");
     }
 
     private void switchTimer() {
@@ -142,33 +144,57 @@ public class TimerController {
     public void setFontSize(int size) {
         timerText.setFont(new Font(size));
     }
-
+    //設定工作時間
     public void setTimerSettings(int minutes) {
         this.currentTimeSeconds = minutes * 60;
         this.workTimeSeconds = minutes * 60;
         updateTimerLabel();
     }
-
+    //設定休息時間
     public void setBreakSettings(int minutes) {
         this.breakTimeSeconds = minutes * 60;
         updateTimerLabel();
     }
-
+    //設定是否自動開始工作計時
     public void setAutoStartPomodoros(boolean autoStartPomodoros) {
         this.autoStartPomodoros = autoStartPomodoros;
         preferences.putBoolean("autoStartPomodoros", autoStartPomodoros);
     }
-
+    //設定是否自動開始休息計時
     public void setAutoStartBreaks(boolean autoStartBreaks) {
         this.autoStartBreaks = autoStartBreaks;
         preferences.putBoolean("autoStartBreaks", autoStartBreaks);
     }
-
+    //設定是在工作還是休息的標籤
     public void setWorkingStatusLabel() {
         if (isWorking) {
             workingStatusLabel.setText("Working");
         } else {
             workingStatusLabel.setText("Break");
+        }
+    }
+    //音樂及其音量設定
+    public void setWorkingSound(String selectedSound) {
+        if (selectedSound.equals("No Sound")) {
+            workingMediaPlayer = null;
+        } else {
+            // Create a media object with the selected sound file
+            Media media = new Media(new File("C:/Users/su/Desktop/javaprojects/demo2/src/main/sounds/" + selectedSound).toURI().toString());
+            // Create a media player
+            workingMediaPlayer = new MediaPlayer(media);
+            workingMediaPlayer.setVolume(preferences.getDouble("volume", 0.5));
+            //結束則自動重頭撥放
+            workingMediaPlayer.setOnEndOfMedia(() -> workingMediaPlayer.seek(Duration.ZERO));
+        }
+    }
+    public MediaPlayer getWorkingMediaPlayer() {
+        return workingMediaPlayer;
+    }
+    public void switchWorkingMediaPlayer() {
+        if (isWorking && workingMediaPlayer != null  && isCounting) {
+            workingMediaPlayer.play();
+        } else  {
+            workingMediaPlayer.stop();
         }
     }
 }
