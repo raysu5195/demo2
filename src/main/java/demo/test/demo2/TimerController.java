@@ -35,6 +35,7 @@ public class TimerController {
     private boolean autoStartBreaks;
     private Timeline timeline;
     private MediaPlayer workingMediaPlayer;
+    private MediaPlayer ringPlayer;
 
     @FXML
     private Label timerText;
@@ -72,7 +73,8 @@ public class TimerController {
     private void startTimer() {
         if (isCounting) {
             return;
-        } else {
+        }
+        else {
             if (isWorking && workingMediaPlayer != null) {
                 workingMediaPlayer.play();
             }
@@ -84,6 +86,10 @@ public class TimerController {
                 switchTimer();
                 setWorkingStatusLabel();
                 switchWorkingMediaPlayer();
+                if (ringPlayer != null){
+                    ringPlayer.stop();
+                    ringPlayer.play();
+                }
             }
             updateTimerLabel();
         }));
@@ -187,14 +193,35 @@ public class TimerController {
             workingMediaPlayer.setOnEndOfMedia(() -> workingMediaPlayer.seek(Duration.ZERO));
         }
     }
+
+    public void setRing(String selectedRing) {
+        if (selectedRing.equals("No Sound")) {
+            ringPlayer = null;
+        } else {
+            Media media = new Media(new File("C:/Users/su/Desktop/javaprojects/demo2/src/main/rings/" + selectedRing).toURI().toString());
+            // Create a media player
+            ringPlayer = new MediaPlayer(media);
+            ringPlayer.setVolume(preferences.getDouble("volume", 0.5));
+        }
+    }
+
     public MediaPlayer getWorkingMediaPlayer() {
         return workingMediaPlayer;
     }
+
+    public MediaPlayer getRingPlayer() {
+        return ringPlayer;
+    }
+
     public void switchWorkingMediaPlayer() {
-        if (isWorking && workingMediaPlayer != null  && isCounting) {
-            workingMediaPlayer.play();
-        } else  {
-            workingMediaPlayer.stop();
+        if (workingMediaPlayer != null) {
+            if (isWorking && isCounting) {
+                workingMediaPlayer.play();
+            } else {
+                workingMediaPlayer.stop();
+            }
         }
     }
+
+
 }
